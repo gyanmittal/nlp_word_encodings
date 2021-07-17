@@ -20,7 +20,9 @@ def naive_one_hot_vector(docs):
     one_hot_vector =[[[1 if i == vocabulary[word] else 0 for i in range(len(vocabulary))] for word in sen] for sen in split_docs_words]
     print("one_hot_vector:\n", one_hot_vector)
 
-#docs =  ["My name is John, What is your name?", "Bill is a very good person. He likes playing soccer.", "What is your favorite game? I love Football. Football is a great game."]
-docs = ["I love playing football.", "Indians love playing Cricket."]
+#Example 1
+#docs = ["I love playing football.", "Indians love playing Cricket."]
+#Example 2
+docs =  ["My name is John, What is your name?", "Bill is a very good person. He likes playing soccer.", "What is your favorite game? I love Football. Football is a great game."]
 naive_one_hot_vector(docs)
 
