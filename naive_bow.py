@@ -3,9 +3,9 @@ Author: Gyan Mittal
 Corresponding Document: https://gyan-mittal.com/nlp-ai-ml/nlp-bag-of-words-bow-model/
 Brief about BOW:
 In NLP, the technique Bag-of-Words (BOW) model counts the occurrence of each word within a document.
-The count can be considered as the weightage of a word in a document.
+The word count can be considered as the weightage of a word in a document.
 This algorithm uses Label/ Integer word encoding.
-Bag pf words algorithm is useful in Search, Recommendation, Classification, etc. use cases.
+Bag of words (BOW) algorithm is useful in Search, Recommendation, Classification, etc. use cases.
 About Code: This code demonstrates the Bag-of-Words (BOW) with two simple example corpus
 '''
 
