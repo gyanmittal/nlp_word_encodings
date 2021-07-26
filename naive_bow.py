@@ -6,7 +6,7 @@ In NLP, the technique Bag-of-Words (BOW) model counts the occurrence of each wor
 The count can be considered as the weightage of a word in a document.
 This algorithm uses Label/ Integer word encoding.
 Bag pf words algorithm is useful in Search, Recommendation, Classification, etc. use cases.
-Anbout Code: This code tries to demonstrate the Bag-of-Words (BOW) with two simple example corpus
+About Code: This code demonstrates the Bag-of-Words (BOW) with two simple example corpus
 '''
 
 from collections import Counter
