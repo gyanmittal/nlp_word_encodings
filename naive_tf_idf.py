@@ -66,7 +66,7 @@ def naive_tf_idf(corpus):
     print("tf_idf:\t", np.around(tf_idf, decimals = 3))
     print("tf_idf_dict:\t", tf_idf_dict)
 
-#corpus =  ["My name is John, What is your name?", "Bill is a very good person. He likes playing soccer.", "What is your favorite game? I love Football. Football is a great game."]
-corpus = ["I love playing football.", "Indians love playing Cricket."]
+corpus =  ["My name is John, What is your name?", "Bill is a very good person. He likes playing soccer.", "What is your favorite game? I love Football. Football is a great game."]
+#corpus = ["I love playing football.", "Indians love playing Cricket."]
 naive_tf_idf(corpus)
 
