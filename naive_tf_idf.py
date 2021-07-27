@@ -1,7 +1,7 @@
 '''
 Author: Gyan Mittal
 Corresponding Document:
-Brief about TF-IDF (Term Frequency- Inverse Document Frequency):
+Brief about TF-IDF (Term Frequency- Inverse Document Frequency): https://gyan-mittal.com/nlp-ai-ml/nlp-tf-idf-term-frequency-inverse-document-frequency-model/
 To overcome the limitation of common words in the Bag of Word (BOW) methodology, a technique called TF-IDF (Term Frequency- Inverse Document Frequency) has been developed.
 It gives the importance of any term in a document if it is occurring multiple times in that document,
 and also penalize the importance of a term in a document in case it is occurring very frequently in various documents in the corpus.
