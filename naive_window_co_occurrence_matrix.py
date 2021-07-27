@@ -47,6 +47,6 @@ def naive_window_co_occurrence_matrix(split_docs_words, window_size=4):
 #Example 1
 docs = ["I love playing football."]
 #Example 2
-#docs = ["I love playing football.", "Indians love to play cricket", "I love playing cricket"]
+#corpus = ["I love playing football.", "Indians love to play cricket", "I love playing cricket"]
 naive_window_co_occurrence_matrix(docs, window_size=1)
 

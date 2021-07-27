@@ -14,7 +14,7 @@ def reduce_to_k_dim(M, k=2):
 
 def naive_doc_term_matrix(docs):
 
-    #split_docs_words= [naive_clean_text('<start/> ' + doc + ' <end/>').split() for doc in docs]
+    #split_docs_words= [naive_clean_text('<start/> ' + doc + ' <end/>').split() for doc in corpus]
     split_docs_words= [naive_clean_text(doc).split() for doc in docs]
     print("split_docs_words", "\n", split_docs_words)
     word_counts = Counter(itertools.chain(*split_docs_words))
@@ -60,10 +60,10 @@ def plot_embeddings(reduce_matrix_x, vocabulary):
         plt.annotate(word, (x, y))
     plt.show()
 
-#docs = ["I love playing cricket", "you love playing football", "We love playing cricket", "All love playing football"] #, "You love all sports", "We love all sports"]
+#corpus = ["I love playing cricket", "you love playing football", "We love playing cricket", "All love playing football"] #, "You love all sports", "We love all sports"]
 docs = ["I love playing both sports, Cricket and Football", "Indians play both sports, Cricket and Football", "Football is more popular sport than Cricket"] 
 
-#matrix_x, vocabulary, reverse_vocabulary = naive_window_co_occurrence_matrix(docs, window_size=1)
+#matrix_x, vocabulary, reverse_vocabulary = naive_window_co_occurrence_matrix(corpus, window_size=1)
 matrix_x, vocabulary, reverse_vocabulary = naive_doc_term_matrix(docs)
 
 #Reduce the matrix to 2 columns

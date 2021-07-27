@@ -6,7 +6,7 @@ from sklearn.decomposition import TruncatedSVD
 
 def naive_doc_term_matrix(docs):
     
-    #split_docs_words= [naive_clean_text('<start/> ' + doc + ' <end/>').split() for doc in docs]
+    #split_docs_words= [naive_clean_text('<start/> ' + doc + ' <end/>').split() for doc in corpus]
     split_docs_words= [naive_clean_text(doc).split() for doc in docs]
     print("split_docs_words", "\n", split_docs_words)
     word_counts = Counter(itertools.chain(*split_docs_words))
@@ -76,9 +76,9 @@ def naive_doc_term_matrix(docs):
     '''
 
 #Example 1
-#docs = ["I love playing football.", "Indians love to play cricket", "I love playing cricket"]
+#corpus = ["I love playing football.", "Indians love to play cricket", "I love playing cricket"]
 #Example 2
-#docs =  ["My name is John, What is your name?", "Bill is a very good person. He likes playing soccer.", "What is your favorite game? I love Football. Football is a great game.", "I love playing football.", "Indians love to play cricket", "I love playing cricket"]
+#corpus =  ["My name is John, What is your name?", "Bill is a very good person. He likes playing soccer.", "What is your favorite game? I love Football. Football is a great game.", "I love playing football.", "Indians love to play cricket", "I love playing cricket"]
 docs = ["I love cricket", "I love football", "I love sports", "you love cricket"]
 naive_doc_term_matrix(docs)
 
