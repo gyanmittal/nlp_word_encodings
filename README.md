@@ -58,7 +58,7 @@ http://web.stanford.edu/class/cs224n/readings/cs224n-2019-notes01-wordvecs1.pdf
 
 In case using conda then environment can be set using the command:
 - conda env create -f environment.yml
-- conda activate nlp_word_encodings
+- conda activate nlp_word_encodings 
 
 Now run ant python file using following command:
 - python3.9 <python file name>
