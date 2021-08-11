@@ -2,8 +2,8 @@
 Author: Gyan Mittal
 Corresponding Document: https://gyan-mittal.com/nlp-ai-ml/nlp-word-embedding-svd-based-methods/#WindowBasedCoOccurrenceMatrix
 Brief about Window-based Co-Occurrence Matrix based SVD:
-In this, we count the associated words mapping between a predefined window.
-Idea is that similar documents keep the company of similar words. After applying this to our corpus, we get the matrix of the size of vocabulary * size of the vocabulary.
+In this, we count the associated reverse_vocab_word_index mapping between a predefined window.
+Idea is that similar documents keep the company of similar reverse_vocab_word_index. After applying this to our corpus, we get the matrix of the size of vocab_word_index * size of the vocab_word_index.
 After applying SVD, we can reduce the dimensionality of the matrix into reduced dimensions, which becomes the embdding of every word.
 About Code: This code demonstrates the concept of Window-based Co-Occurrence Matrix based SVD with simple example corpus
 '''
@@ -18,7 +18,7 @@ def reduce_to_k_dim(M, k=2):
     
     svd = TruncatedSVD(n_components = k, n_iter = 100, random_state = 456, tol = 0.0)
     reduce_matrix_x = svd.fit_transform(M)
-    #print(reduce_matrix_x)
+    #print(V_center_word_weights)
     return reduce_matrix_x
 
 def naive_window_co_occurrence_matrix(corpus, window_size=4):
@@ -27,7 +27,7 @@ def naive_window_co_occurrence_matrix(corpus, window_size=4):
     #print("split_docs_words", "\n", split_docs_words)
     word_counts = Counter(itertools.chain(*split_docs_words))
     #print("word_counts", "\n", word_counts)
-    #words = [x for i, x in enumerate(word_counts)]
+    #reverse_vocab_word_index = [x for i, x in enumerate(word_counts)]
     vocab_word_index = {x: i for i, x in enumerate(word_counts)}
     reverse_vocab_word_index = {i: x for i, x in enumerate(word_counts)}
     #print("vocab_word_index\n", vocab_word_index)
@@ -72,6 +72,7 @@ def plot_embeddings(reduce_matrix_x, vocabulary):
     plt.show()
 
 corpus = ["I love playing cricket", "you love playing football", "We love playing cricket", "I love all sports", "You love all sports", "We love all sports"]
+#corpus = ["I love playing football", "I love playing cricket", "I love playing sports"]
 matrix_x, vocabulary, reverse_vocabulary = naive_window_co_occurrence_matrix(corpus, window_size=1)
 
 #Reduce the matrix to 2 columns

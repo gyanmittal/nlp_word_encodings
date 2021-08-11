@@ -5,7 +5,7 @@ Brief about BOW:
 In NLP, the technique Bag-of-Words (BOW) model counts the occurrence of each word within a document.
 The word count can be considered as the weightage of a word in a document.
 This algorithm uses Label/ Integer word encoding.
-Bag of words (BOW) algorithm is useful in Search, Recommendation, Classification, etc. use cases.
+Bag of reverse_vocab_word_index (BOW) algorithm is useful in Search, Recommendation, Classification, etc. use cases.
 About Code: This code demonstrates the Bag-of-Words (BOW) with two simple example corpus
 '''
 
@@ -22,7 +22,7 @@ def naive_bow(corpus):
     print("word_counts", "\n", word_counts)
 
     vocab_word_index = {x: i for i, x in enumerate(word_counts)}
-    print("vocabulary\n", vocab_word_index)
+    print("vocab_word_index\n", vocab_word_index)
 
     vocab_size = len(vocab_word_index)
     no_docs = len(corpus)

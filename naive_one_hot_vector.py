@@ -18,17 +18,17 @@ def naive_one_hot_vector(corpus):
     print("word_counts", "\n", word_counts)
 
     vocab_word_index = {x: i for i, x in enumerate(word_counts)}
-    print("vocabulary\n", vocab_word_index)
+    print("vocab_word_index\n", vocab_word_index)
 
-    # =One hot vector of each word in the vocabulary
+    # =One hot vector of each word in the vocab_word_index
     vocabulary_hot_vector = {word: [1 if i == vocab_word_index[word] else 0 for i in range(len(vocab_word_index))] for i, word in enumerate(vocab_word_index)}
     print("vocabulary_hot_vector\n", vocabulary_hot_vector)
 
-    # Each doc in corpus can be represented as secquence of word id's instead of words
+    # Each doc in corpus can be represented as secquence of word id's instead of reverse_vocab_word_index
     doc_sequence_id =[[vocab_word_index[word] for word in sen] for sen in split_docs_words]
     print("doc_sequence_id:\n", doc_sequence_id)
 
-    # Each doc in corpus can be represented as secquence of one hot vectors instead of words and word id's
+    # Each doc in corpus can be represented as secquence of one hot vectors instead of reverse_vocab_word_index and word id's
     one_hot_vector =[[[1 if i == vocab_word_index[word] else 0 for i in range(len(vocab_word_index))] for word in sen] for sen in split_docs_words]
     print("one_hot_vector:\n", one_hot_vector)
 

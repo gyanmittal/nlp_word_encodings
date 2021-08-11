@@ -3,7 +3,7 @@ Author: Gyan Mittal
 Corresponding Document: https://gyan-mittal.com/nlp-ai-ml/nlp-word-embedding-svd-based-methods/#DocTermMatrix
 Brief about Document Term Matrix based SVD:
 In this, we count the occurrence of each word in each document.
-Doing this creates a large matrix of the size of vocabulary into the number of documents.
+Doing this creates a large matrix of the size of vocab_word_index into the number of documents.
 After applying SVD, we can reduce the dimensionality of the matrix into reduced dimensions, which becomes the embdding of every word.
 About Code: This code demonstrates the concept of Document Term Matrix based SVD with simple example corpus
 '''
@@ -20,7 +20,7 @@ def reduce_to_k_dim(M, k=2):
 
     svd = TruncatedSVD(n_components = k, n_iter = 100, random_state = 456, tol = 0.0)
     reduce_matrix_x = svd.fit_transform(M)
-    #print(reduce_matrix_x)
+    #print(V_center_word_weights)
     return reduce_matrix_x
 
 def naive_doc_term_matrix(corpus):
@@ -32,7 +32,7 @@ def naive_doc_term_matrix(corpus):
 
     vocab_word_index = {x: i for i, x in enumerate(word_counts)}
     reverse_vocab_word_index = {i: x for i, x in enumerate(word_counts)}
-    print("vocabulary\n", vocab_word_index)
+    print("vocab_word_index\n", vocab_word_index)
     print("reverse_vocabulary\n", reverse_vocab_word_index)
 
     vocab_size = len(vocab_word_index)
@@ -73,7 +73,7 @@ def plot_embeddings(reduce_matrix_x, vocabulary):
 #corpus = ["I love playing cricket", "you love playing football", "We love playing cricket", "All love playing football"] #, "You love all sports", "We love all sports"]
 corpus = ["I love playing both sports, Cricket and Football", "Indians play both sports, Cricket and Football", "Football is more popular sport than Cricket"]
 
-#matrix_x, vocabulary, reverse_vocabulary = naive_window_co_occurrence_matrix(corpus, window_size=1)
+#matrix_x, vocab_word_index, reverse_vocabulary = naive_window_co_occurrence_matrix(corpus, window_size=1)
 matrix_x, vocabulary, reverse_vocabulary = naive_doc_term_matrix(corpus)
 
 #Reduce the matrix to 2 columns
