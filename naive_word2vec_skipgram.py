@@ -58,8 +58,9 @@ def naive_softmax_loss_and_gradient(center_word_embed_weight_vec, context_word_i
     yhatCopyMinusOneAtIndex[context_word_idx] -= 1
 
     grad_center_vec = np.dot(U_context_words_weights, yhatCopyMinusOneAtIndex)
-    grad_outside_vecs = np.dot(yhatCopyMinusOneAtIndex[:, np.newaxis], center_word_embed_weight_vec[np.newaxis, :]).T
-
+    #grad_outside_vecs = np.dot(yhatCopyMinusOneAtIndex[:, np.newaxis], center_word_embed_weight_vec[np.newaxis, :]).T
+    grad_outside_vecs = np.dot(center_word_embed_weight_vec[:, np.newaxis], yhatCopyMinusOneAtIndex[np.newaxis, :])
+    
     return loss, grad_center_vec, grad_outside_vecs
 
 
@@ -105,7 +106,7 @@ def plot_embeddings(V_center_word_weights, vocab_word_index):
     plt.show()
 
 embedding_dim = 2
-epochs = 10000
+epochs = 1000
 learning_rate_alpha = 1e-03
 corpus_sentences = ["I love playing football", "I love playing cricket", "I love playing sports"]
 
