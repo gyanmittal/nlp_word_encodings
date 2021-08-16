@@ -50,17 +50,17 @@ def prepare_training_data(corpus_sentences):
     return center_word_train, context_words_train, vocab_word_index
 
 
-def naive_softmax_loss_and_gradient(center_word_embed_weight_vec, context_word_idx, U_context_words_weights):
+def naive_softmax_loss_and_gradient(h, context_word_idx, U_context_words_weights):
 
-    yhat = naive_softmax(np.dot(U_context_words_weights.T, center_word_embed_weight_vec))
+    u = np.dot(U_context_words_weights.T, h)
+    yhat = naive_softmax(u)
     loss = -np.log(yhat[context_word_idx])
-    yhatCopyMinusOneAtIndex = yhat.copy()
-    yhatCopyMinusOneAtIndex[context_word_idx] -= 1
+    e = yhat.copy()
+    e[context_word_idx] -= 1
 
-    grad_center_vec = np.dot(U_context_words_weights, yhatCopyMinusOneAtIndex)
-    #grad_outside_vecs = np.dot(yhatCopyMinusOneAtIndex[:, np.newaxis], center_word_embed_weight_vec[np.newaxis, :]).T
-    grad_outside_vecs = np.dot(center_word_embed_weight_vec[:, np.newaxis], yhatCopyMinusOneAtIndex[np.newaxis, :])
-    
+    grad_center_vec = np.dot(U_context_words_weights, e)
+    grad_outside_vecs = np.dot(h[:, np.newaxis], e[np.newaxis, :])
+
     return loss, grad_center_vec, grad_outside_vecs
 
 
@@ -79,8 +79,8 @@ def train(center_word_train, context_words_train, vocab_word_index, embedding_di
             grad_context_vectors = np.zeros(U_context_words_weights.shape)
             for context_word_idx in range(vocab_size):
                 if (context_words_train[i][context_word_idx]):
-                    center_word_embed_weight_vec = np.dot(V_center_word_weights.T, center_word_train[i])
-                    l, grad_center, grad_outside = naive_softmax_loss_and_gradient(center_word_embed_weight_vec, context_word_idx, U_context_words_weights)
+                    h = np.dot(V_center_word_weights.T, center_word_train[i])
+                    l, grad_center, grad_outside = naive_softmax_loss_and_gradient(h, context_word_idx, U_context_words_weights)
                     loss += l
                     current_center_word_idx = -1
                     for c_i in range(len(center_word_train[i])):
