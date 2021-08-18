@@ -45,11 +45,13 @@ def prepare_training_data(corpus_sentences):
             center_word[vocab_word_index[sentence[i]]] = 1
             context = [0 for x in range(vocab_size)]
 
-            for j in range(i - window_size, i + window_size):
+            for j in range(i - window_size, i + window_size+1):
+                #print(i, "\t", j)
                 if i != j and j >= 0 and j < len(sentence):
-                    context[vocab_word_index[sentence[j]]] += 1
+                    context[vocab_word_index[sentence[j]]] = 1
             X_center_word_train.append(center_word)
             y_context_words_train.append(context)
+
 
     return X_center_word_train, y_context_words_train, vocab_word_index
 
@@ -113,9 +115,13 @@ embedding_dim = 2
 epochs = 1000
 learning_rate_alpha = 1e-03
 corpus_sentences = ["I love playing Football", "I love playing Cricket", "I love playing sports"]
+#corpus_sentences = ["I love playing Football"]
 
 X_center_word_train, y_context_words_train, vocab_word_index = prepare_training_data(corpus_sentences)
-print(vocab_word_index)
+#print(vocab_word_index)
+#print("X_center_word_train:\t", X_center_word_train)
+#print("y_context_words_train:\t", y_context_words_train)
+
 V_center_word_weights, U_context_words_weights = train(X_center_word_train, y_context_words_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
 
 print("U_context_words_weights:\t", U_context_words_weights, U_context_words_weights.shape)
