@@ -1,8 +1,12 @@
 '''
 Author: Gyan Mittal
-Corresponding Document:
-Brief about word2vec:
-About Code: This code demonstrates the concept of calculating the word embeddings using word2vec methodology
+Corresponding Document: https://gyan-mittal.com/nlp-ai-ml/nlp-neural-network-iteration-based-methods-word-embeddings/
+Brief about word2vec: A team of Google researchers lead by Tomas Mikolov developed, patented, and published Word2vec in two publications in 2013.
+For learning word embeddings from raw text, Word2Vec is a computationally efficient predictive model.
+Word2Vec methodology is used to calculate Word Embedding based on Neural Network/ iterative.
+Word2Vec methodology have two model architectures: the Continuous Bag-of-Words (CBOW) model and the Skip-Gram model.
+About Code: This code demonstrates the basic concept of calculating the word embeddings
+using word2vec methodology using Skip-Gram model.
 '''
 
 from collections import Counter
@@ -25,8 +29,8 @@ def prepare_training_data(corpus_sentences):
     window_size = 1
     split_corpus_sentences_words = [naive_clean_text(sentence).split() for sentence in corpus_sentences]
 
-    center_word_train = []
-    context_words_train = []
+    X_center_word_train = []
+    y_context_words_train = []
 
     word_counts = Counter(itertools.chain(*split_corpus_sentences_words))
     #print("word_counts", "\n", word_counts)
@@ -44,10 +48,10 @@ def prepare_training_data(corpus_sentences):
             for j in range(i - window_size, i + window_size):
                 if i != j and j >= 0 and j < len(sentence):
                     context[vocab_word_index[sentence[j]]] += 1
-            center_word_train.append(center_word)
-            context_words_train.append(context)
+            X_center_word_train.append(center_word)
+            y_context_words_train.append(context)
 
-    return center_word_train, context_words_train, vocab_word_index
+    return X_center_word_train, y_context_words_train, vocab_word_index
 
 
 def naive_softmax_loss_and_gradient(h, context_word_idx, U_context_words_weights):
@@ -64,7 +68,7 @@ def naive_softmax_loss_and_gradient(h, context_word_idx, U_context_words_weights
     return loss, grad_center_vec, grad_outside_vecs
 
 
-def train(center_word_train, context_words_train, vocab_word_index, embedding_dim=2, epochs=1000, learning_rate_alpha=1e-03):
+def train(X_center_word_train, y_context_words_train, vocab_word_index, embedding_dim=2, epochs=1000, learning_rate_alpha=1e-03):
     vocab_size = len(vocab_word_index)
 
     np.random.seed(0)
@@ -73,18 +77,18 @@ def train(center_word_train, context_words_train, vocab_word_index, embedding_di
 
     for epoch_number in range(0, epochs):
         loss = 0
-        for i in range(len(center_word_train)):
+        for i in range(len(X_center_word_train)):
 
             grad_center_vectors = np.zeros(V_center_word_weights.shape)
             grad_context_vectors = np.zeros(U_context_words_weights.shape)
             for context_word_idx in range(vocab_size):
-                if (context_words_train[i][context_word_idx]):
-                    h = np.dot(V_center_word_weights.T, center_word_train[i])
+                if (y_context_words_train[i][context_word_idx]):
+                    h = np.dot(V_center_word_weights.T, X_center_word_train[i])
                     l, grad_center, grad_outside = naive_softmax_loss_and_gradient(h, context_word_idx, U_context_words_weights)
                     loss += l
                     current_center_word_idx = -1
-                    for c_i in range(len(center_word_train[i])):
-                        if center_word_train[i][c_i] == 1:
+                    for c_i in range(len(X_center_word_train[i])):
+                        if X_center_word_train[i][c_i] == 1:
                             current_center_word_idx = c_i
                             break
                     grad_center_vectors[current_center_word_idx] += grad_center
@@ -92,7 +96,7 @@ def train(center_word_train, context_words_train, vocab_word_index, embedding_di
 
             U_context_words_weights -= learning_rate_alpha * grad_context_vectors
             V_center_word_weights -= learning_rate_alpha * grad_center_vectors
-        loss /= len(center_word_train)
+        loss /= len(X_center_word_train)
         if(epoch_number%(epochs/10) == 0 or epoch_number == (epochs - 1) or epoch_number == 0):
             print("epoch ", epoch_number, " loss = ", loss, " learning_rate_alpha:\t", learning_rate_alpha)
     return V_center_word_weights, U_context_words_weights
@@ -110,9 +114,9 @@ epochs = 1000
 learning_rate_alpha = 1e-03
 corpus_sentences = ["I love playing football", "I love playing cricket", "I love playing sports"]
 
-center_word_train, context_words_train, vocab_word_index = prepare_training_data(corpus_sentences)
+X_center_word_train, y_context_words_train, vocab_word_index = prepare_training_data(corpus_sentences)
 print(vocab_word_index)
-V_center_word_weights, U_context_words_weights = train(center_word_train, context_words_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
+V_center_word_weights, U_context_words_weights = train(X_center_word_train, y_context_words_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
 
 print("U_context_words_weights:\t", U_context_words_weights, U_context_words_weights.shape)
 print("V_center_word_weights:\t", V_center_word_weights, V_center_word_weights.shape)
