@@ -112,7 +112,7 @@ def plot_embeddings(V_center_word_weights, vocab_word_index):
 embedding_dim = 2
 epochs = 1000
 learning_rate_alpha = 1e-03
-corpus_sentences = ["I love playing football", "I love playing cricket", "I love playing sports"]
+corpus_sentences = ["I love playing Football", "I love playing Cricket", "I love playing sports"]
 
 X_center_word_train, y_context_words_train, vocab_word_index = prepare_training_data(corpus_sentences)
 print(vocab_word_index)
