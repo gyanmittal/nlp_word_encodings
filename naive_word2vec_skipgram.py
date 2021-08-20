@@ -1,6 +1,6 @@
 '''
 Author: Gyan Mittal
-Corresponding Document: nlp-word2vec-skipgram-neural-network-iteration-based-methods-word-embeddings
+Corresponding Document: https://gyan-mittal.com/nlp-ai-ml/nlp-word2vec-skipgram-neural-network-iteration-based-methods-word-embeddings
 Brief about word2vec: A team of Google researchers lead by Tomas Mikolov developed, patented, and published Word2vec in two publications in 2013.
 For learning word embeddings from raw text, Word2Vec is a computationally efficient predictive model.
 Word2Vec methodology is used to calculate Word Embedding based on Neural Network/ iterative.
