@@ -52,64 +52,84 @@ def prepare_training_data(corpus_sentences):
             X_center_word_train.append(center_word)
             y_context_words_train.append(context)
 
-
     return X_center_word_train, y_context_words_train, vocab_word_index
 
 
-def naive_softmax_loss_and_gradient(h, context_word_idx, U_context_words_weights):
+def naive_softmax_loss_and_gradient(h, context_word_idx, W1):
 
-    u = np.dot(U_context_words_weights.T, h)
+    u = np.dot(W1.T, h)
     yhat = naive_softmax(u)
-    loss = -np.log(yhat[context_word_idx])
+    #print("yhat:\t", yhat)
+    #exit(0)
+    loss_context_word = -np.log(yhat[context_word_idx])
     e = yhat.copy()
     e[context_word_idx] -= 1
+    #print("e:\t", e)
+    dW = np.dot(W1, e)
+    dW1 = np.dot(h[:, np.newaxis], e[np.newaxis, :])
+    #print("h[:, np.newaxis]", h[:, np.newaxis])
+    #print("e[np.newaxis, :]", e[np.newaxis, :])
+    #print("dW1:\t", dW1)
+    #exit(0)
+    #print("loss:\t", loss_context_word)
+    #print("dW:\t", dW)
 
-    grad_center_vec = np.dot(U_context_words_weights, e)
-    grad_outside_vecs = np.dot(h[:, np.newaxis], e[np.newaxis, :])
-
-    return loss, grad_center_vec, grad_outside_vecs
+    return loss_context_word, dW, dW1
 
 
 def train(X_center_word_train, y_context_words_train, vocab_word_index, embedding_dim=2, epochs=1000, learning_rate_alpha=1e-03):
     vocab_size = len(vocab_word_index)
 
     np.random.seed(0)
-    V_center_word_weights = np.random.normal(0, .1, (vocab_size, embedding_dim))
-    U_context_words_weights = np.random.normal(0, .1, (embedding_dim, vocab_size))
+    W = np.random.normal(0, .1, (vocab_size, embedding_dim))
+    W1 = np.random.normal(0, .1, (embedding_dim, vocab_size))
+
+    #print("W1:\t", W1, W1.shape)
+    #print("W:\t", W, W.shape)
 
     for epoch_number in range(0, epochs):
         loss = 0
         for i in range(len(X_center_word_train)):
-
-            grad_center_vectors = np.zeros(V_center_word_weights.shape)
-            grad_context_vectors = np.zeros(U_context_words_weights.shape)
+            #print("X_train[i]\t", X_center_word_train[i])
+            #print("y_train[i]\t", y_context_words_train[i])
+            dW = np.zeros(W.shape)
+            dW1 = np.zeros(W1.shape)
+            h = np.dot(W.T, X_center_word_train[i])
+            #print("h:\t", h)
+            #exit(0)
             for context_word_idx in range(vocab_size):
                 if (y_context_words_train[i][context_word_idx]):
-                    h = np.dot(V_center_word_weights.T, X_center_word_train[i])
-                    l, grad_center, grad_outside = naive_softmax_loss_and_gradient(h, context_word_idx, U_context_words_weights)
-                    loss += l
+                    #print("context_word_idx:\t", context_word_idx)
+                    loss_context_word, dW_context_word, dW1_context_word = naive_softmax_loss_and_gradient(h, context_word_idx, W1)
+                    loss += loss_context_word
                     current_center_word_idx = -1
                     for c_i in range(len(X_center_word_train[i])):
                         if X_center_word_train[i][c_i] == 1:
                             current_center_word_idx = c_i
                             break
-                    grad_center_vectors[current_center_word_idx] += grad_center
-                    grad_context_vectors += grad_outside
+                    dW[current_center_word_idx] += dW_context_word
+                    dW1 += dW1_context_word
+                    #print("dW:\t", dW)
+                    #print("dW1:\t", dW1)
 
-            U_context_words_weights -= learning_rate_alpha * grad_context_vectors
-            V_center_word_weights -= learning_rate_alpha * grad_center_vectors
+            W1 -= learning_rate_alpha * dW1
+            W -= learning_rate_alpha * dW
+            #print("W1:\t", W1)
+            #print("W:\t", W)
+            #if (i==1):
+                #exit(0)
         loss /= len(X_center_word_train)
         if(epoch_number%(epochs/10) == 0 or epoch_number == (epochs - 1) or epoch_number == 0):
             print("epoch ", epoch_number, " loss = ", loss, " learning_rate_alpha:\t", learning_rate_alpha)
-    return V_center_word_weights, U_context_words_weights
+    return W, W1
 
-def plot_embeddings(V_center_word_weights, vocab_word_index):
+def plot_embeddings(W, vocab_word_index):
     for word, i in vocab_word_index.items():
-        x = V_center_word_weights[i][0]
-        y = V_center_word_weights[i][1]
-        plt.scatter(x, y)
-        plt.annotate(word, (x, y))
-        print(word, ":\t[", x, ",", y, "]")
+        x_coord = W[i][0]
+        y_coord = W[i][1]
+        plt.scatter(x_coord, y_coord)
+        plt.annotate(word, (x_coord, y_coord))
+        print(word, ":\t[", x_coord, ",", y_coord, "]")
     plt.show()
 
 embedding_dim = 2
@@ -118,14 +138,14 @@ learning_rate_alpha = 1e-03
 corpus_sentences = ["I love playing Football", "I love playing Cricket", "I love playing sports"]
 #corpus_sentences = ["I love playing Football"]
 
-X_center_word_train, y_context_words_train, vocab_word_index = prepare_training_data(corpus_sentences)
+X_train, y_train, vocab_word_index = prepare_training_data(corpus_sentences)
 #print(vocab_word_index)
-#print("X_center_word_train:\t", X_center_word_train)
-#print("y_context_words_train:\t", y_context_words_train)
+#print("X_train:\t", X_train)
+#print("y_train:\t", y_train)
 
-V_center_word_weights, U_context_words_weights = train(X_center_word_train, y_context_words_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
+W, W1 = train(X_train, y_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
 
-print("U_context_words_weights:\t", U_context_words_weights, U_context_words_weights.shape)
-print("V_center_word_weights:\t", V_center_word_weights, V_center_word_weights.shape)
-plot_embeddings(V_center_word_weights, vocab_word_index)
-#plot_embeddings(U_context_words_weights.T, vocab_word_index)
+print("W1:\t", W1, W1.shape)
+print("W:\t", W, W.shape)
+plot_embeddings(W, vocab_word_index)
+#plot_embeddings(W1.T, vocab_word_index)

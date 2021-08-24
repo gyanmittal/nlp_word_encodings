@@ -20,7 +20,7 @@ def reduce_to_k_dim(M, k=2):
 
     svd = TruncatedSVD(n_components = k, n_iter = 100, random_state = 456, tol = 0.0)
     reduce_matrix_x = svd.fit_transform(M)
-    #print(V_center_word_weights)
+    #print(W)
     return reduce_matrix_x
 
 def naive_doc_term_matrix(corpus):
@@ -65,7 +65,7 @@ def plot_embeddings(reduce_matrix_x, vocabulary):
     for word, i in vocabulary.items():
         x = reduce_matrix_x[i][0]
         y = reduce_matrix_x[i][1]
-        #print(word, ":\t", x, ":\t", y)
+        #print(word, ":\t", X_train, ":\t", y_train)
         plt.scatter(x, y)
         plt.annotate(word, (x, y))
     plt.show()
