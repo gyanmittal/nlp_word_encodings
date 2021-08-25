@@ -58,67 +58,67 @@ def prepare_training_data(corpus_sentences):
 def naive_softmax_loss_and_gradient(h, context_word_idx, W1):
 
     u = np.dot(W1.T, h)
+    #print("u:\t", u)
     yhat = naive_softmax(u)
     #print("yhat:\t", yhat)
-    #exit(0)
+
     loss_context_word = -np.log(yhat[context_word_idx])
+    #print("loss_context_word:\t", loss_context_word)
+    #prediction error
     e = yhat.copy()
     e[context_word_idx] -= 1
     #print("e:\t", e)
-    dW = np.dot(W1, e)
-    dW1 = np.dot(h[:, np.newaxis], e[np.newaxis, :])
-    #print("h[:, np.newaxis]", h[:, np.newaxis])
-    #print("e[np.newaxis, :]", e[np.newaxis, :])
-    #print("dW1:\t", dW1)
-    #exit(0)
-    #print("loss:\t", loss_context_word)
-    #print("dW:\t", dW)
 
-    return loss_context_word, dW, dW1
+    dW_context_word = np.dot(W1, e)
+    dW1_context_word = np.dot(h[:, np.newaxis], e[np.newaxis, :])
+
+    #print("dW_context_word:\t", dW_context_word)
+    #print("dW1_context_word:\t", dW1_context_word)
+
+    return loss_context_word, dW_context_word, dW1_context_word
 
 
-def train(X_center_word_train, y_context_words_train, vocab_word_index, embedding_dim=2, epochs=1000, learning_rate_alpha=1e-03):
+def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, learning_rate_alpha=1e-03):
     vocab_size = len(vocab_word_index)
 
     np.random.seed(0)
     W = np.random.normal(0, .1, (vocab_size, embedding_dim))
     W1 = np.random.normal(0, .1, (embedding_dim, vocab_size))
-
     #print("W1:\t", W1, W1.shape)
     #print("W:\t", W, W.shape)
 
     for epoch_number in range(0, epochs):
         loss = 0
-        for i in range(len(X_center_word_train)):
-            #print("X_train[i]\t", X_center_word_train[i])
-            #print("y_train[i]\t", y_context_words_train[i])
+        for i in range(len(x_train)):
+            #print("x_train[i]\t", x_train[i])
+            #print("y_train[i]\t", y_train[i])
             dW = np.zeros(W.shape)
             dW1 = np.zeros(W1.shape)
-            h = np.dot(W.T, X_center_word_train[i])
+            h = np.dot(W.T, x_train[i])
             #print("h:\t", h)
             #exit(0)
             for context_word_idx in range(vocab_size):
-                if (y_context_words_train[i][context_word_idx]):
+                if (y_train[i][context_word_idx]):
                     #print("context_word_idx:\t", context_word_idx)
                     loss_context_word, dW_context_word, dW1_context_word = naive_softmax_loss_and_gradient(h, context_word_idx, W1)
                     loss += loss_context_word
                     current_center_word_idx = -1
-                    for c_i in range(len(X_center_word_train[i])):
-                        if X_center_word_train[i][c_i] == 1:
+                    for c_i in range(len(x_train[i])):
+                        if x_train[i][c_i] == 1:
                             current_center_word_idx = c_i
                             break
                     dW[current_center_word_idx] += dW_context_word
                     dW1 += dW1_context_word
                     #print("dW:\t", dW)
                     #print("dW1:\t", dW1)
+            #exit(0)
 
-            W1 -= learning_rate_alpha * dW1
             W -= learning_rate_alpha * dW
-            #print("W1:\t", W1)
+            W1 -= learning_rate_alpha * dW1
             #print("W:\t", W)
-            #if (i==1):
-                #exit(0)
-        loss /= len(X_center_word_train)
+            #print("W1:\t", W1)
+            #exit(0)
+        loss /= len(x_train)
         if(epoch_number%(epochs/10) == 0 or epoch_number == (epochs - 1) or epoch_number == 0):
             print("epoch ", epoch_number, " loss = ", loss, " learning_rate_alpha:\t", learning_rate_alpha)
     return W, W1
@@ -138,12 +138,12 @@ learning_rate_alpha = 1e-03
 corpus_sentences = ["I love playing Football", "I love playing Cricket", "I love playing sports"]
 #corpus_sentences = ["I love playing Football"]
 
-X_train, y_train, vocab_word_index = prepare_training_data(corpus_sentences)
+x_train, y_train, vocab_word_index = prepare_training_data(corpus_sentences)
 #print(vocab_word_index)
-#print("X_train:\t", X_train)
+#print("x_train:\t", x_train)
 #print("y_train:\t", y_train)
 
-W, W1 = train(X_train, y_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
+W, W1 = train(x_train, y_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
 
 print("W1:\t", W1, W1.shape)
 print("W:\t", W, W.shape)
