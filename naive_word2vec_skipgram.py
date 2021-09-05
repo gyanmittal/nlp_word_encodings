@@ -96,7 +96,6 @@ def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, lear
             dW1 = np.zeros(W1.shape)
             h = np.dot(W.T, x_train[i])
             #print("h:\t", h)
-            #exit(0)
             for context_word_idx in range(vocab_size):
                 if (y_train[i][context_word_idx]):
                     #print("context_word_idx:\t", context_word_idx)
@@ -111,15 +110,12 @@ def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, lear
                     dW1 += dW1_context_word
                     #print("dW:\t", dW)
                     #print("dW1:\t", dW1)
-            #exit(0)
 
             W -= learning_rate_alpha * dW
             W1 -= learning_rate_alpha * dW1
             #print("W:\t", W)
             #print("W1:\t", W1)
-            #if(i==1):
-            #    exit(0)
-            #exit(0)
+
         loss /= len(x_train)
         if(epoch_number%(epochs/10) == 0 or epoch_number == (epochs - 1) or epoch_number == 0):
             print("epoch ", epoch_number, " loss = ", loss, " learning_rate_alpha:\t", learning_rate_alpha)
