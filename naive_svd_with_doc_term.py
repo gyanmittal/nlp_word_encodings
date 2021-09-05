@@ -65,7 +65,7 @@ def plot_embeddings(reduce_matrix_x, vocabulary):
     for word, i in vocabulary.items():
         x = reduce_matrix_x[i][0]
         y = reduce_matrix_x[i][1]
-        #print(word, ":\t", X_train, ":\t", y_train)
+        #print(word, ":\t", x_train, ":\t", y_train)
         plt.scatter(x, y)
         plt.annotate(word, (x, y))
     plt.show()

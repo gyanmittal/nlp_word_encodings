@@ -41,13 +41,14 @@ In the field of NLP, generally, AI/ ML Algorithms don’t work on Text data. We 
 
 Any data consists of words. So in case, we find some way to convert (Encode) words into numerical data, then our whole data could be converted into numerical data, which can be consumed by AI/ ML algorithms.
 
-We have the following ways of converting (Encoding) the words into numerical data. These encodings evolved over time and currently, Word Embeddings are the most preferred way to encode the words.
+We have the following ways of converting (Encoding) the words into numerical data.
 
-To get the details of various encodings are as following.
+- [Integer/ Label Encoding](https://gyan-mittal.com/nlp-ai-ml/nlp-label-integer-encoding-of-words/)
+- [One-Hot Encoding](https://gyan-mittal.com/nlp-ai-ml/nlp-word-encoding-by-one-hot-encoding/)
+- [Word Embeddings](https://gyan-mittal.com/nlp-ai-ml/nlp-word-embeddings/)
 
-- Integer/ Label Encoding
-- One-Hot Encoding
-- Word Embeddings
+\[To get the details of various encodings, please follow the corresponding links\]
+These encodings evolved over time and currently, Word Embeddings are the most preferred way to encode the words.
 
 After encoding the data, we can apply the various algorithms to solve the NLP use cases mentioned at the top of the document.
 

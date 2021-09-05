@@ -27,7 +27,7 @@ def naive_window_co_occurrence_matrix(corpus, window_size=4):
     #print("split_docs_words", "\n", split_docs_words)
     word_counts = Counter(itertools.chain(*split_docs_words))
     #print("word_counts", "\n", word_counts)
-    #reverse_vocab_word_index = [X_train for i, X_train in enumerate(word_counts)]
+    #reverse_vocab_word_index = [x_train for i, x_train in enumerate(word_counts)]
     vocab_word_index = {x: i for i, x in enumerate(word_counts)}
     reverse_vocab_word_index = {i: x for i, x in enumerate(word_counts)}
     #print("vocab_word_index\n", vocab_word_index)
@@ -66,7 +66,7 @@ def plot_embeddings(reduce_matrix_x, vocabulary):
     for word, i in vocabulary.items():
         x = reduce_matrix_x[i][0]
         y = reduce_matrix_x[i][1]
-        #print(word, ":\t", X_train, ":\t", y_train)
+        #print(word, ":\t", x_train, ":\t", y_train)
         plt.scatter(x, y)
         plt.annotate(word, (x, y))
     plt.show()

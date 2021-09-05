@@ -117,6 +117,8 @@ def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, lear
             W1 -= learning_rate_alpha * dW1
             #print("W:\t", W)
             #print("W1:\t", W1)
+            #if(i==1):
+            #    exit(0)
             #exit(0)
         loss /= len(x_train)
         if(epoch_number%(epochs/10) == 0 or epoch_number == (epochs - 1) or epoch_number == 0):
