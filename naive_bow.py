@@ -14,7 +14,7 @@ import itertools
 import numpy as np
 from util import naive_clean_text
 
-# naive algorithm impementation of Bag-of-Words (BOW)
+# naive algorithm implementation of Bag-of-Words (BOW)
 def naive_bow(corpus):
     split_docs_words= [naive_clean_text(doc).split() for doc in corpus]
     print("split_docs_words", "\n", split_docs_words)

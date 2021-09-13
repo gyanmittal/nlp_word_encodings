@@ -62,7 +62,7 @@ In case using conda then environment can be set using the command:
 - conda activate nlp_word_encodings
 
 Now run ant python file using following command:
-- python3.9 <python file name>
+- python3.9 \<python file name\>
 
 Deactivate the conda environement:
 - conda deactivate
