@@ -35,7 +35,6 @@ def prepare_training_data(corpus_sentences):
     y_context_words_train = []
 
     word_counts = Counter(itertools.chain(*split_corpus_sentences_words))
-    #print("word_counts", "\n", word_counts)
 
     vocab_word_index = {x: i for i, x in enumerate(word_counts)}
     reverse_vocab_word_index = {value: key for key, value in vocab_word_index.items()}
@@ -60,22 +59,16 @@ def prepare_training_data(corpus_sentences):
 def naive_softmax_loss_and_gradient(h, context_word_idx, W1):
 
     u = np.dot(W1.T, h)
-    #print("u:\t", u)
     yhat = naive_softmax(u)
-    #print("yhat:\t", yhat)
+
 
     loss_context_word = -np.log(yhat[context_word_idx])
-    #print("loss_context_word:\t", loss_context_word)
     #prediction error
     e = yhat.copy()
     e[context_word_idx] -= 1
-    #print("e:\t", e)
 
     dW_context_word = np.dot(W1, e)
     dW1_context_word = np.dot(h[:, np.newaxis], e[np.newaxis, :])
-
-    #print("dW_context_word:\t", dW_context_word)
-    #print("dW1_context_word:\t", dW1_context_word)
 
     return loss_context_word, dW_context_word, dW1_context_word
 
@@ -134,8 +127,6 @@ def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, lear
     np.random.seed(0)
     W = np.random.normal(0, .1, (vocab_size, embedding_dim))
     W1 = np.random.normal(0, .1, (embedding_dim, vocab_size))
-    #print("W1:\t", W1, W1.shape)
-    #print("W:\t", W, W.shape)
 
     for epoch_number in range(0, epochs):
         loss = 0
@@ -154,13 +145,10 @@ def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, lear
                             break
                     dW[current_center_word_idx] += dW_context_word
                     dW1 += dW1_context_word
-                    #print("dW:\t", dW)
-                    #print("dW1:\t", dW1)
 
             W -= learning_rate_alpha * dW
             W1 -= learning_rate_alpha * dW1
-            #print("W:\t", W)
-            #print("W1:\t", W1)
+
         loss /= len(x_train)
         if (epoch_number == 0):
             image_files = plot_embeddings_and_loss(W, vocab_word_index, loss_log, epochs, loss)
