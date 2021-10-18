@@ -19,3 +19,4 @@ dependencies:
     - six==1.16.0
     - sklearn==0.0
     - threadpoolctl==2.2.0
+    - imageio=2.9.0=pyhd3eb1b0_0

@@ -14,6 +14,8 @@ import itertools
 import numpy as np
 import re
 import matplotlib.pyplot as plt
+import os
+import imageio
 
 # Clean the text after converting it to lower case
 def naive_clean_text(text):
@@ -77,10 +79,58 @@ def naive_softmax_loss_and_gradient(h, context_word_idx, W1):
 
     return loss_context_word, dW_context_word, dW1_context_word
 
+def plot_embeddings_and_loss(W, vocab_word_index, loss_log, epoch, max_loss, img_files=[]):
+    fig, (ax1, ax2) = plt.subplots(1, 2, sharex=False, figsize=(10, 5))
+
+    ax1.set_title('Word Embeddings in 2-d space for the given example')
+    plt.setp(ax1, xlabel='Embedding dimension - 1', ylabel='Embedding dimension - 2')
+    #ax1.set_xlim([min(W[:, 0]) - 1, max(W[:, 0]) + 1])
+    #ax1.set_ylim([min(W[:, 1]) - 1, max(W[:, 1]) + 1])
+    #ax1.set_xlim([-3, 3.5])
+    #ax1.set_ylim([-3.5, 3])
+
+    for word, i in vocab_word_index.items():
+        x_coord = W[i][0]
+        y_coord = W[i][1]
+        ax1.plot(x_coord, y_coord, "cD", markersize=5)
+        ax1.text(x_coord, y_coord, word, fontsize=10)
+    ax2.set_title("Loss graph")
+    plt.setp(ax2, xlabel='#Epochs (Log scale)', ylabel='Loss')
+    ax2.set_xlim([1 , epoch * 1.1])
+    ax2.set_xscale('log')
+    ax2.set_ylim([0, max_loss * 1.1])
+
+    if(len(loss_log) > 0):
+        ax2.plot(1, max(loss_log), "bD")
+        ax2.plot(loss_log, "b")
+        ax2.set_title("Loss is " + r"$\bf{" + str("{:.6f}".format(loss_log[-1])) + "}$" + " after " + r"$\bf{" + str(f'{len(loss_log) - 1:,}') + "}$" + " epochs")
+
+    directory = "images"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    filename = f'images/{len(loss_log)}.png'
+    for i in range(13):
+        img_files.append(filename)
+    # save frame
+    plt.savefig(filename)
+    plt.close()
+    return img_files
+
+def create_gif(input_image_filenames, output_gif_name):
+    # build gif
+    with imageio.get_writer(output_gif_name, mode='I') as writer:
+        for image_file_name in input_image_filenames:
+            image = imageio.imread(image_file_name)
+            writer.append_data(image)
+    # Remove image files
+    for image_file_name in set(input_image_filenames):
+        os.remove(image_file_name)
 
 def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, learning_rate_alpha=1e-03):
     vocab_size = len(vocab_word_index)
 
+    loss_log = []
+    saved_epoch_no = 0
     np.random.seed(0)
     W = np.random.normal(0, .1, (vocab_size, embedding_dim))
     W1 = np.random.normal(0, .1, (embedding_dim, vocab_size))
@@ -90,15 +140,11 @@ def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, lear
     for epoch_number in range(0, epochs):
         loss = 0
         for i in range(len(x_train)):
-            #print("x_train[i]\t", x_train[i])
-            #print("y_train[i]\t", y_train[i])
             dW = np.zeros(W.shape)
             dW1 = np.zeros(W1.shape)
             h = np.dot(W.T, x_train[i])
-            #print("h:\t", h)
             for context_word_idx in range(vocab_size):
                 if (y_train[i][context_word_idx]):
-                    #print("context_word_idx:\t", context_word_idx)
                     loss_context_word, dW_context_word, dW1_context_word = naive_softmax_loss_and_gradient(h, context_word_idx, W1)
                     loss += loss_context_word
                     current_center_word_idx = -1
@@ -115,11 +161,18 @@ def train(x_train, y_train, vocab_word_index, embedding_dim=2, epochs=1000, lear
             W1 -= learning_rate_alpha * dW1
             #print("W:\t", W)
             #print("W1:\t", W1)
-
         loss /= len(x_train)
+        if (epoch_number == 0):
+            image_files = plot_embeddings_and_loss(W, vocab_word_index, loss_log, epochs, loss)
+            loss_log.append(loss)
+        loss_log.append(loss)
         if(epoch_number%(epochs/10) == 0 or epoch_number == (epochs - 1) or epoch_number == 0):
             print("epoch ", epoch_number, " loss = ", loss, " learning_rate_alpha:\t", learning_rate_alpha)
-    return W, W1
+
+        if ((epoch_number == 1) or np.ceil(np.log10(epoch_number + 2)) > saved_epoch_no or (epoch_number + 1) == epochs):
+            image_files = plot_embeddings_and_loss(W, vocab_word_index, loss_log, epochs, max(loss_log), image_files)
+            saved_epoch_no = np.ceil(np.log10(epoch_number + 2))
+    return W, W1, image_files
 
 def plot_embeddings(W, vocab_word_index):
     for word, i in vocab_word_index.items():
@@ -131,19 +184,15 @@ def plot_embeddings(W, vocab_word_index):
     plt.show()
 
 embedding_dim = 2
-epochs = 1000
+epochs = 2000
 learning_rate_alpha = 1e-03
 corpus_sentences = ["I love playing Football", "I love playing Cricket", "I love playing sports"]
 #corpus_sentences = ["I love playing Football"]
 
 x_train, y_train, vocab_word_index = prepare_training_data(corpus_sentences)
-#print(vocab_word_index)
-#print("x_train:\t", x_train)
-#print("y_train:\t", y_train)
 
-W, W1 = train(x_train, y_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
+W, W1, image_files = train(x_train, y_train, vocab_word_index, embedding_dim, epochs, learning_rate_alpha)
 
 print("W1:\t", W1, W1.shape)
 print("W:\t", W, W.shape)
-plot_embeddings(W, vocab_word_index)
-#plot_embeddings(W1.T, vocab_word_index)
+create_gif(image_files, 'images/word2vec_skipgram.gif')
